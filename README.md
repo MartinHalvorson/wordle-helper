@@ -19,6 +19,7 @@ _Note: This small project is just for my own fun and if I post results from this
 
 ### V1 (current version)
 #### Past results (from always guessing the first recommended word produced in the list)
+- Wordle Number - Word (1st guess, 2nd guess, ... n-1th guess, correct guess)
 - #214 - POINT (aires, louin, doing, joint, point)
 - #213 - PROXY (aires, yourt, droyl, crony, frowy, grovy, proxy)
 - #212 - SHIRE (aires, reist, shire)
