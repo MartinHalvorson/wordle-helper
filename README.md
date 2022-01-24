@@ -7,8 +7,9 @@ _Note: This small project is just for my own fun and if I post results from this
 ### How to Use:
 
 1. In **main.py** at the bottom, fill in known information in _correct_spots_ (green letters), _wrong_spots_ (yellow letters), and _wrong_letters_ (gray letters).
-2. Run main.py.
-3. Repeat the process of adding new known information and eliminating words until arriving at the correct word.
+2. Run **main.py**.
+3. Choose the top scored word (or any word at your discretion from the list) and submit to the [Wordle](https://www.powerlanguage.co.uk/wordle/) game.
+4. Take any new known information from your submitted guess, add it to the inputs in **main.py**, and generate a new guess from the new information.
 
 ### Notes to User (and Self):
 - The original dictionary I used contains a lot of words that probably aren't really going to be picked as Wordle words. In the future, I could potentially find a better source dictionary to use. You can replace the dictionary in **all_words.txt** with the new dictionary and run the function _all_words_to_five_letter_words()_ in **main.py** to update the file **five_letter_words.txt**.
