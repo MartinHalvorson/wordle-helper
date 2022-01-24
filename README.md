@@ -1,5 +1,7 @@
 # Wordle Helper!
 
+A guess generating aid for playing the game [Wordle](https://www.powerlanguage.co.uk/wordle/)!
+
 _Note: This small project is just for my own fun and if I post results from this anywhere I make it clear that the results were produced with the aid of a computer. By no means am I trying to ruin the spirit of Wordle!_
 
 ### How to Use:
