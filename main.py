@@ -1,3 +1,4 @@
+# Uses word file of all English words and produces word file of all five letter English words (lowercase)
 def all_words_to_five_letter_words():
     with open('all_words.txt', 'r+') as f:
         data = f.read().replace(' ', '').split('\n')
@@ -11,9 +12,7 @@ def all_words_to_five_letter_words():
     return
 
 
-# correct_spots: ['s', 't', '', '', '']
-# wrong_spots: ['', '', '', 'a', 'r']
-# wrong_letters: 'xgn'
+# Given the known information, is this word a valid potential word? Returns True/False
 def potential_word(word, green, yellow, gray):
     for i, letter in enumerate(green):
         if (letter != '' and word[i] != letter) or word[i] in yellow[i] or word[i] in gray:
@@ -24,33 +23,40 @@ def potential_word(word, green, yellow, gray):
     return True
 
 
+# Calculates the frequency score of a word based on the letters in the other valid words
+# Only counts repeated letters once
+def calculate_word_score(word, frequencies):
+    letters = [x for i, x in enumerate(word) if word.index(x) == i]
+    return sum(frequencies.get(x, 0) for x in letters)
+
+
+# Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
+def order_by_frequency(valid_words):
+    frequencies = {}
+    for word in valid_words:
+        for letter in word:
+            frequencies[letter] = frequencies.get(letter, 0) + 1
+    total = sum(frequencies.values())
+    for letter in frequencies.keys():
+        frequencies[letter] /= total
+    scored_list = [(word, calculate_word_score(word, frequencies)) for word in valid_words]
+    scored_list.sort(key=lambda x: x[1], reverse=True)
+    return scored_list
+
+
+# Takes known information, produces a list of valid words. Also produces frequencies of letters in remaining valid words
+# and returns an ordered list of high letter-frequency words to help gather maximum information with future clues.
 def wordle_helper(green, yellow, gray):
     with open('five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
         valid_words = [word for word in all_words if potential_word(word, green, yellow, gray)]
-        print(valid_words)
+        return order_by_frequency(valid_words)
 
 
-correct_spots = ['s', '', '', '', '']  # Green letters
-wrong_spots = ['', 'a', 'm', 'm', 'm']  # Yellow letters
-wrong_letters = 'c'  # Gray letters
+correct_spots = ['', '', '', '', '']  # Green letters
+wrong_spots = ['', '', '', '', '']  # Yellow letters
+wrong_letters = 'stare'  # Gray letters
 
-wordle_helper(correct_spots, wrong_spots, wrong_letters)
-
-
-
-
-'''
-method(
-correct spots['', '', '', '', '']
-wrong spots['', '', '', '', '']
-wrong letters[''])
-
-determine valid words
-take letter frequencies of valid words
-make a list of words with highest letter frequencies (ignore bonus from repeated letters)
-make recommendation
-
-incorporate letter frequencies
-'''
-
+scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
+for word, score in scored_list[:50]:  # Only prints the top 50 words
+    print(word, score)
