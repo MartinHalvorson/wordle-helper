@@ -30,4 +30,4 @@ _Note: This small project is just for my own fun and if I post results from this
 #### Optimization to make upon this
 - Early guesses should prioritize maximizing information over attempting to guess actual words. Later guesses should attempt to guess actual words. (V1 always just guesses based on trying to maximize information.)
 - Find a better dictionary to use with more realistic potential Wordle words
-- Explore whether calculating dictionary letter frequencies vs text letter frequencies improves guessing results
+- Explore whether calculating dictionary letter frequencies vs text letter frequencies improves guessing results. Another possibility is to use letter frequencies from historical Wordle answers... maybe worth exploring.
