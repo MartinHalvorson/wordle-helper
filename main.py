@@ -55,8 +55,8 @@ def wordle_helper(green, yellow, gray):
 
 correct_spots = ['', '', '', '', '']  # Green letters
 wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = 'stare'  # Gray letters
+wrong_letters = ''  # Gray letters
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
-for word, score in scored_list[:50]:  # Only prints the top 50 words
+for word, score in scored_list[:20]:  # Only prints the top 50 words
     print(word, score)
