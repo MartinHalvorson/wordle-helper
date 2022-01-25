@@ -3,6 +3,7 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
                              'o': 0.075, 'p': 0.019, 'q': 0.00095, 'r': 0.06, 's': 0.063, 't': 0.091, 'u': 0.028,
                              'v': 0.0098, 'w': 0.024, 'x': 0.0015, 'y': 0.02, 'z': 0.00074}
 
+# Five letter dictionary file from https://eslforums.com/5-letter-words/
 with open('smaller_five_letter_dictionary.txt', 'r+') as f:
     common_word_list = f.read().replace(' ', '').split('\n')
 
@@ -67,9 +68,9 @@ def wordle_helper(green, yellow, gray):
         return order_by_frequency(valid_words)
 
 
-correct_spots = ['', 'o', '', '', '']  # Green letters
-wrong_spots = ['ar', 'r', 'oa', 's', 's']  # Yellow letters
-wrong_letters = 'ed'  # Gray letters
+correct_spots = ['', '', '', '', '']  # Green letters
+wrong_spots = ['', '', '', '', '']  # Yellow letters
+wrong_letters = ''  # Gray letters
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
 for word, score in scored_list[:20]:  # Only prints the top 20 words
