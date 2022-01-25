@@ -40,8 +40,8 @@ def calculate_word_score(word, frequencies):
     letters = [x for i, x in enumerate(word) if word.index(x) == i]
     if word in common_word_list:
         score += 0.5
-    if word[4] == 's':
-        score -= 0.2
+    if word[4] == 's' and word[3] not in 'aeious':
+        score -= 0.3
     return score + sum(frequencies.get(x, 0) for x in letters) + sum(text_relative_frequencies[x] for x in letters)
 
 
@@ -69,9 +69,9 @@ def wordle_helper(green, yellow, gray):
 
 
 correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = ''  # Gray letters
+wrong_spots = ['a', 'r', '', 's', '']  # Yellow letters
+wrong_letters = 'oe'  # Gray letters
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
-for word, score in scored_list[:20]:  # Only prints the top 20 words
+for word, score in scored_list[:50]:  # Only prints the top 20 words
     print(word, score)
