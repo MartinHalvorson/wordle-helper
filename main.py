@@ -7,6 +7,12 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
 with open('smaller_five_letter_dictionary.txt', 'r+') as f:
     common_word_list = f.read().replace(' ', '').split('\n')
 
+# Starting with the third guess, rare letter bonus kicks into score
+rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.05, 'd': 0.0, 'e': 0.0, 'f': 0.05, 'g': 0.05,
+                    'h': 0.0, 'i': 0.0, 'j': 0.15, 'k': 0.10, 'l': 0.0, 'm': 0.05, 'n': 0.0,
+                    'o': 0.0, 'p': 0.05, 'q': 0.15, 'r': 0.0, 's': 0.0, 't': 0.0, 'u': 0.05,
+                    'v': 0.10, 'w': 0.05, 'x': 0.15, 'y': 0.05, 'z': 0.15}
+
 
 # Uses word file of all English words and produces word file of all five letter English words (lowercase)
 def all_words_to_five_letter_words():
@@ -35,18 +41,21 @@ def potential_word(word, green, yellow, gray):
 
 # Calculates the frequency score of a word based on the letters in the other valid words
 # Only counts repeated letters once
-def calculate_word_score(word, frequencies):
+def calculate_word_score(word, frequencies, guess_count):
     score = 0
-    letters = [x for i, x in enumerate(word) if word.index(x) == i]
+    letters = [x for i, x in enumerate(word) if word.index(x) == i]  # Remove duplicates
     if word in common_word_list:
         score += 0.5
-    if word[4] == 's' and word[3] not in 'aeious':
+    if word[4] == 's' and word[3] not in 's':
         score -= 0.3
+    if guess_count >= 3:
+        score += sum(rare_letter_bonus[x] for x in letters)
+
     return score + sum(frequencies.get(x, 0) for x in letters) + sum(text_relative_frequencies[x] for x in letters)
 
 
 # Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
-def order_by_frequency(valid_words):
+def order_by_score(valid_words, guess_count):
     frequencies = {}
     for word in valid_words:
         for letter in word:
@@ -54,24 +63,25 @@ def order_by_frequency(valid_words):
     total = sum(frequencies.values())
     for letter in frequencies.keys():
         frequencies[letter] /= total
-    scored_list = [(word, calculate_word_score(word, frequencies)) for word in valid_words]
+    scored_list = [(word, calculate_word_score(word, frequencies, guess_count)) for word in valid_words]
     scored_list.sort(key=lambda x: x[1], reverse=True)
     return scored_list
 
 
 # Takes known information, produces a list of valid words. Also produces frequencies of letters in remaining valid words
 # and returns an ordered list of high letter-frequency words to help gather maximum information with future clues.
-def wordle_helper(green, yellow, gray):
+def wordle_helper(green, yellow, gray, guess_count):
     with open('five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
         valid_words = [word for word in all_words if potential_word(word, green, yellow, gray)]
-        return order_by_frequency(valid_words)
+        return order_by_score(valid_words, guess_count)
 
 
-correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['a', 'r', '', 's', '']  # Yellow letters
-wrong_letters = 'oe'  # Gray letters
+correct_spots = ['', 'r', 'o', '', '']  # Green letters
+wrong_spots = ['', '', '', '', '']  # Yellow letters
+wrong_letters = 'asefnt'  # Gray letters
+guess_count = 3  # e.g. 1 -> 1st guess
 
-scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
+scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
     print(word, score)
