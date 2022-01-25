@@ -15,7 +15,7 @@ _Note: This small project is just for my own fun and if I post results from this
 ### With the first two guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
-- Duplicate letters in a guess are punished (likely to obtain less information than guessing two different letters)
+- Duplicate letters in a guess are punished (they likely obtain less information than guessing two different letters)
 ### Starting with the third guess, the program attempts to guess the actual word.
 - Two word lists: a simpler list of more common five letters words and a larger, more complete word list. Words on common list score a little higher.
 - In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals.
