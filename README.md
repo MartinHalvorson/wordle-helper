@@ -39,8 +39,8 @@ _Note: This small project is just for my own fun and if I post results from this
 - #205 - QUERY (arose, inert, query)
 - #204 - GORGE (arose, other, forge, gorge)
 
-### Optimizations to make upon V1
-- Rather than always switching to guessing the word on the third clue, could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining, you may still want to guess for maximizing information).
+### Optimizations to make upon V2
+- Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
 - Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-3 guesses. The 4-5 guesses are from Wordle words not in the more common dictionary I use.
 
 ## V1 - Averages ~5.0 guesses per word
