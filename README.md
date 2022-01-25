@@ -11,15 +11,15 @@ _Note: This small project is just for my own fun and if I post results from this
 3. Choose the top scored word (or any word at your discretion from the list) and submit to the [Wordle](https://www.powerlanguage.co.uk/wordle/) game.
 4. Take any new known information from your submitted guess, add it to the inputs in **main.py**, and generate a new guess from the new information.
 
-## V2 (current version) - Averages 4.1 guesses per word
+## V2 (current version) - Averages 4.0 guesses per word
 ### With the first two guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
 - Duplicate letters in a guess are punished (they likely obtain less information than guessing two different letters)
 ### Starting with the third guess, the program attempts to guess the actual word.
 - Two word lists: a simpler list of more common five letters words and a larger, more complete word list. Words on common list score a little higher.
-- In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals.
-- Rare letter bonus kicks into scoring after the first two guesses. It appears to me Wordle tries to include words using unique letters (QUERY, PROXY, KNOLL) so we will keep this in mind guessing.
+- In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals. There are some false positives with this and the program attempts to correct for this (i.e. if the word ends in "ss" or "us" it is less likely to be a plural and so these although they end with "s" aren't punished by the word scoring system).
+- Rare letter bonus kicks into scoring after the first two guesses. It appears to me Wordle tries to include words using unique letters (QUERY, PROXY, KNOLL) so we will keep this in mind when evaluating potential words.
 
 ### Past results (from always guessing the first recommended word produced in the list)
 - #219 - KNOLL (arose, tonic, blown, knoll)
