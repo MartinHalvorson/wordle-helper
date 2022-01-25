@@ -90,10 +90,41 @@ def wordle_helper(green, yellow, gray, next_guess_count):
         return order_by_score(valid_words, next_guess_count)
 
 
+# Given a word as the Wordle, simulates this program attempting to guess that word.
+def simulate_word(word):
+    guess_count = 1
+    guesses = []
+    green = ['', '', '', '', '']  # Green letters
+    yellow = ['', '', '', '', '']  # Yellow letters
+    gray = ''  # Gray letters
+    recommended_guesses = wordle_helper(green, yellow, gray, guess_count)
+
+    while len(recommended_guesses) > 0:
+        guess = recommended_guesses[0][0]
+        guesses.append(guess)
+        if guess == word:
+            return guesses
+        else:
+            guess_count += 1
+            for i in range(len(guess)):
+                if guess[i] == word[i]:
+                    green[i] = guess[i]
+                elif guess[i] in word and guess[i] not in yellow[i]:
+                    yellow[i] += guess[i]
+                else:
+                    gray += guess[i]
+        recommended_guesses = wordle_helper(green, yellow, gray, guess_count)
+
+    return guesses
+
+
+print(simulate_word('prick'))
+exit(0)
+
 correct_spots = ['', '', '', '', '']  # Green letters
 wrong_spots = ['', '', '', '', '']  # Yellow letters
 wrong_letters = ''  # Gray letters
-next_guess_count = 3  # e.g. 1 -> 1st guess
+next_guess_count = 1  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
