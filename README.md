@@ -11,7 +11,7 @@ _Note: This small project is just for my own fun and if I post results from this
 3. Choose the top scored word (or any word at your discretion from the list) and submit to the [Wordle](https://www.powerlanguage.co.uk/wordle/) game.
 4. Take any new known information from your submitted guess, add it to the inputs in **main.py**, and generate a new guess from the new information.
 
-### V2 (current version) - Average 3.5 guesses per word
+### V2 (current version) - Averages 3.5 guesses per word
 - Uses both dictionary and text relative letter frequencies to score words
 - Has a list of more common five letters words and a rarer, more complete word dictionary. Words on common list score a little higher.
 - In scoring, punishes dictionary words ending with an s (higher likelihood of being plural; Wordle doesn't often pick plurals)
@@ -30,7 +30,7 @@ _Note: This small project is just for my own fun and if I post results from this
 - Early guesses should prioritize maximizing information over attempting to guess actual words. Later guesses should attempt to guess actual words. (V1 always just guesses based on trying to maximize information.)
 - Explore using letter frequencies from historical Wordle answers
 
-### V1 - Average 4.5 guesses per word
+### V1 - Averages 4.5 guesses per word
 - Uses dictionary letter frequencies to score words
 #### Past results (from always guessing the first recommended word produced in the list)
 - 27 guesses to guess words #209-#214
