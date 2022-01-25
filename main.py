@@ -7,11 +7,11 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
 with open('smaller_five_letter_dictionary.txt', 'r+') as f:
     common_word_list = f.read().replace(' ', '').split('\n')
 
-# Starting with the third guess, rare letter bonus kicks into score
-rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.05, 'd': 0.0, 'e': 0.0, 'f': 0.05, 'g': 0.05,
-                    'h': 0.0, 'i': 0.0, 'j': 0.15, 'k': 0.10, 'l': 0.0, 'm': 0.05, 'n': 0.0,
+# Starting with the third guess, rare letter bonus kicks into score. Based on dictionary frequencies.
+rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.0, 'd': 0.0, 'e': 0.0, 'f': 0.05, 'g': 0.05,
+                    'h': 0.05, 'i': 0.0, 'j': 0.15, 'k': 0.05, 'l': 0.0, 'm': 0.05, 'n': 0.0,
                     'o': 0.0, 'p': 0.05, 'q': 0.15, 'r': 0.0, 's': 0.0, 't': 0.0, 'u': 0.05,
-                    'v': 0.10, 'w': 0.05, 'x': 0.15, 'y': 0.05, 'z': 0.15}
+                    'v': 0.10, 'w': 0.10, 'x': 0.15, 'y': 0.05, 'z': 0.15}
 
 
 # Uses word file of all English words and produces word file of all five letter English words (lowercase)
@@ -84,10 +84,10 @@ def wordle_helper(green, yellow, gray, guess_count):
         return order_by_score(valid_words, guess_count)
 
 
-correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = ''  # Gray letters
-next_guess_count = 1  # e.g. 1 -> 1st guess
+correct_spots = ['s', '', '', 'r', 'e']  # Green letters
+wrong_spots = ['', 're', 're', 's', '']  # Yellow letters
+wrong_letters = 'aougkyc'  # Gray letters
+next_guess_count = 3 # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
