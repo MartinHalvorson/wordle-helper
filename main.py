@@ -3,8 +3,9 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
                              'o': 0.075, 'p': 0.019, 'q': 0.00095, 'r': 0.06, 's': 0.063, 't': 0.091, 'u': 0.028,
                              'v': 0.0098, 'w': 0.024, 'x': 0.0015, 'y': 0.02, 'z': 0.00074}
 
-# Five letter dictionary file from https://eslforums.com/5-letter-words/
-with open('smaller_five_letter_dictionary.txt', 'r+') as f:
+# Five letter dictionary file: https://eslforums.com/5-letter-words/
+# Another list of common words, filtered to just the five letter words: http://sherwoodschool.ru/vocabulary/proficiency/
+with open('common_five_letter_words.txt', 'r+') as f:
     common_word_list = f.read().replace(' ', '').split('\n')
 
 # Starting with the third guess, rare letter bonus kicks into score. Based on dictionary frequencies.
@@ -16,14 +17,15 @@ rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.0, 'd': 0.0, 'e': 0.0, 'f': 0.0
 
 # Uses word file of all English words and produces word file of all five letter English words (lowercase)
 def all_words_to_five_letter_words():
-    with open('all_words.txt', 'r+') as f:
+    with open('most_common_english_words.txt', 'r+') as f:
         data = f.read().replace(' ', '').split('\n')
         for i, word in enumerate(data):
             for letter in word:
                 if letter in '1234567890&-\'./,' or len(word) != 5:
                     data[i] = ''
         data = [x.lower() for x in data if len(x) == 5]
-        with open('five_letter_words.txt', 'w+') as g:
+        data = sorted(list(set(data)))
+        with open('workspace.txt', 'w+') as g:
             g.write('\n'.join(data))
     return
 
@@ -84,7 +86,7 @@ def order_by_score(valid_words, next_guess_count):
 # Takes known information, produces a list of valid words. Also produces frequencies of letters in remaining valid words
 # and returns an ordered list of high letter-frequency words to help gather maximum information with future clues.
 def wordle_helper(green, yellow, gray, next_guess_count):
-    with open('five_letter_words.txt', 'r') as f:
+    with open('complete_five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
         valid_words = [word for word in all_words if potential_word(word, green, yellow, gray, next_guess_count)]
         return order_by_score(valid_words, next_guess_count)
