@@ -41,21 +41,28 @@ def potential_word(word, green, yellow, gray):
 
 # Calculates the frequency score of a word based on the letters in the other valid words
 # Only counts repeated letters once
-def calculate_word_score(word, frequencies, guess_count):
+def calculate_word_score(word, frequencies, next_guess_count):
     score = 0
-    letters = [x for i, x in enumerate(word) if word.index(x) == i]  # Remove duplicates
-    if word in common_word_list:
+
+    if next_guess_count < 3:
+        letters = [x for i, x in enumerate(word) if word.index(x) == i]  # Remove duplicates if trying to max information
+        score += sum(frequencies.get(x, 0) for x in letters)  # dictionary frequencies
+        score += sum(text_relative_frequencies[x] for x in letters)  # text frequencies
+    else:
+        letters = [x for x in word]
+
+    if word in common_word_list:  # common word bonus
         score += 0.5
-    if word[4] == 's' and word[3] not in 's':
+    if word[4] == 's' and word[3] not in 's':  # likely plural penalty
         score -= 0.3
-    if guess_count >= 3:
+    if next_guess_count >= 3:  # rare letter bonus
         score += sum(rare_letter_bonus[x] for x in letters)
 
-    return score + sum(frequencies.get(x, 0) for x in letters) + sum(text_relative_frequencies[x] for x in letters)
+    return score
 
 
 # Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
-def order_by_score(valid_words, guess_count):
+def order_by_score(valid_words, next_guess_count):
     frequencies = {}
     for word in valid_words:
         for letter in word:
@@ -63,7 +70,7 @@ def order_by_score(valid_words, guess_count):
     total = sum(frequencies.values())
     for letter in frequencies.keys():
         frequencies[letter] /= total
-    scored_list = [(word, calculate_word_score(word, frequencies, guess_count)) for word in valid_words]
+    scored_list = [(word, calculate_word_score(word, frequencies, next_guess_count)) for word in valid_words]
     scored_list.sort(key=lambda x: x[1], reverse=True)
     return scored_list
 
@@ -77,11 +84,11 @@ def wordle_helper(green, yellow, gray, guess_count):
         return order_by_score(valid_words, guess_count)
 
 
-correct_spots = ['', 'r', 'o', '', '']  # Green letters
+correct_spots = ['', '', '', '', '']  # Green letters
 wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = 'asefnt'  # Gray letters
-guess_count = 3  # e.g. 1 -> 1st guess
+wrong_letters = ''  # Gray letters
+next_guess_count = 1  # e.g. 1 -> 1st guess
 
-scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, guess_count)
+scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
     print(word, score)
