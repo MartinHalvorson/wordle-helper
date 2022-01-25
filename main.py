@@ -29,10 +29,16 @@ def all_words_to_five_letter_words():
 
 
 # Given the known information, is this word a valid potential word? Returns True/False
-def potential_word(word, green, yellow, gray):
-    for i, letter in enumerate(green):
-        if (letter != '' and word[i] != letter) or word[i] in yellow[i] or word[i] in gray:
-            return False
+def potential_word(word, green, yellow, gray, next_guess_count):
+    if next_guess_count < 3:  # Don't need to use green clues on the second guess
+        for i, letter in enumerate(green):
+            if word[i] in yellow[i] or word[i] in gray:
+                return False
+    else:  # Guess words that fit all known information
+        for i, letter in enumerate(green):
+            if (letter != '' and word[i] != letter) or word[i] in yellow[i] or word[i] in gray:
+                return False
+
     for letter in ''.join(yellow):  # Letters in wrong spots must be present in the word though
         if letter not in word:
             return False
@@ -77,17 +83,17 @@ def order_by_score(valid_words, next_guess_count):
 
 # Takes known information, produces a list of valid words. Also produces frequencies of letters in remaining valid words
 # and returns an ordered list of high letter-frequency words to help gather maximum information with future clues.
-def wordle_helper(green, yellow, gray, guess_count):
+def wordle_helper(green, yellow, gray, next_guess_count):
     with open('five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
-        valid_words = [word for word in all_words if potential_word(word, green, yellow, gray)]
-        return order_by_score(valid_words, guess_count)
+        valid_words = [word for word in all_words if potential_word(word, green, yellow, gray, next_guess_count)]
+        return order_by_score(valid_words, next_guess_count)
 
 
-correct_spots = ['s', '', '', 'r', 'e']  # Green letters
-wrong_spots = ['', 're', 're', 's', '']  # Yellow letters
-wrong_letters = 'aougkyc'  # Gray letters
-next_guess_count = 3 # e.g. 1 -> 1st guess
+correct_spots = ['', '', '', '', '']  # Green letters
+wrong_spots = ['', '', '', '', '']  # Yellow letters
+wrong_letters = ''  # Gray letters
+next_guess_count = 3  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
