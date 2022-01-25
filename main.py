@@ -3,6 +3,9 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
                              'o': 0.075, 'p': 0.019, 'q': 0.00095, 'r': 0.06, 's': 0.063, 't': 0.091, 'u': 0.028,
                              'v': 0.0098, 'w': 0.024, 'x': 0.0015, 'y': 0.02, 'z': 0.00074}
 
+with open('smaller_five_letter_dictionary.txt', 'r+') as f:
+    common_word_list = f.read().replace(' ', '').split('\n')
+
 
 # Uses word file of all English words and produces word file of all five letter English words (lowercase)
 def all_words_to_five_letter_words():
@@ -32,8 +35,13 @@ def potential_word(word, green, yellow, gray):
 # Calculates the frequency score of a word based on the letters in the other valid words
 # Only counts repeated letters once
 def calculate_word_score(word, frequencies):
+    score = 0
     letters = [x for i, x in enumerate(word) if word.index(x) == i]
-    return sum(frequencies.get(x, 0) for x in letters) + sum(text_relative_frequencies[x] for x in letters)
+    if word in common_word_list:
+        score += 0.5
+    if word[4] == 's':
+        score -= 0.2
+    return score + sum(frequencies.get(x, 0) for x in letters) + sum(text_relative_frequencies[x] for x in letters)
 
 
 # Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
@@ -59,9 +67,9 @@ def wordle_helper(green, yellow, gray):
         return order_by_frequency(valid_words)
 
 
-correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = ''  # Gray letters
+correct_spots = ['', 'o', '', '', '']  # Green letters
+wrong_spots = ['ar', 'r', 'oa', 's', 's']  # Yellow letters
+wrong_letters = 'ed'  # Gray letters
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters)
 for word, score in scored_list[:20]:  # Only prints the top 20 words
