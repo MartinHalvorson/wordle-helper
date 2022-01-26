@@ -17,7 +17,7 @@ rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.0, 'd': 0.0, 'e': 0.0, 'f': 0.0
 
 # Uses word file of all English words and produces word file of all five letter English words (lowercase)
 def all_words_to_five_letter_words():
-    with open('common_words.txt', 'r+') as f:
+    with open('workspace.txt', 'r+') as f:
         data = f.read().replace(' ', '').split('\n')
         for i, word in enumerate(data):
             for letter in word:
@@ -25,7 +25,7 @@ def all_words_to_five_letter_words():
                     data[i] = ''
         data = [x.lower() for x in data if len(x) == 5]
         data = sorted(list(set(data)))
-        with open('workspace.txt', 'w+') as g:
+        with open('past_answers.txt', 'w+') as g:
             g.write('\n'.join(data))
     return
 
@@ -131,16 +131,18 @@ def calculate_average_guess_metric():
         print('Average Num Guesses per Wordle: ', sum(len(simulate_word(word)) for word in words) / len(words))
         return
 
-#simulate_word('apple')
-#calculate_average_guess_metric()
+
+# simulate_word('apple')
+# calculate_average_guess_metric()
 
 '''
 correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['', '', '', '', '']  # Yellow letters
-wrong_letters = ''  # Gray letters
-next_guess_count = 1  # e.g. 1 -> 1st guess
+wrong_spots = ['a', 'a', 'c', 'a', '']  # Yellow letters
+wrong_letters = 'rosepintdul'  # Gray letters
+next_guess_count = 3  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
     print(word, score)
 '''
+
