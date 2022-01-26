@@ -105,7 +105,8 @@ def simulate_word(word):
         guess = recommended_guesses[0][0]
         guesses.append(guess)
         if guess == word:
-            return guesses
+            print('Guesses: ', guesses)
+            return
         else:
             guess_count += 1
             for i in range(len(guess)):
@@ -122,14 +123,16 @@ def simulate_word(word):
 
 
 # Takes current algorithm and calculates average number of guesses required in order to guess past Wordles
+# Useful for benchmarking value-add of changes.
 def calculate_average_guess_metric():
     with open('past_answers.txt', 'r+') as f:
         words = f.read().replace(' ', '').split('\n')
-        print(words)
-        return sum(len(simulate_word(word)) for word in words) / len(words)
+        print('Inputs: ', words)
+        print('Average Num Guesses per Wordle: ', sum(len(simulate_word(word)) for word in words) / len(words))
+        return
 
-
-print(calculate_average_guess_metric())
+#simulate_word('apple')
+#calculate_average_guess_metric()
 
 '''
 correct_spots = ['', '', '', '', '']  # Green letters
