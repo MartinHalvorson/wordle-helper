@@ -106,7 +106,7 @@ def simulate_word(word):
         guesses.append(guess)
         if guess == word:
             print('Guesses: ', guesses)
-            return
+            return guesses
         else:
             guess_count += 1
             for i in range(len(guess)):
@@ -132,14 +132,14 @@ def calculate_average_guess_metric():
         return
 
 
-# simulate_word('apple')
-# calculate_average_guess_metric()
+simulate_word('apple')
+# calculate_average_guess_metric()  # This can take a couple minutes to run for ~220 words
 
 '''
 correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['a', 'a', 'c', 'a', '']  # Yellow letters
-wrong_letters = 'rosepintdul'  # Gray letters
-next_guess_count = 3  # e.g. 1 -> 1st guess
+wrong_spots = ['a', '', '', '', '']  # Yellow letters
+wrong_letters = 'rose'  # Gray letters
+next_guess_count = 2  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:50]:  # Only prints the top 20 words
