@@ -1,12 +1,13 @@
 # Wordle Helper!
 
-A guess generating aid for playing the game [Wordle](https://www.powerlanguage.co.uk/wordle/)!
+A guess generating aid for playing the game [Wordle](https://www.powerlanguage.co.uk/wordle/)! 
 
 _Note: This small project is just for my own fun and if I post results from this anywhere I make it clear that the results were produced with the aid of a computer. By no means am I trying to ruin the spirit of Wordle!_
 
-### How to Use:
-There are a few different capabilities in Wordle Helper:
-1. **Single Guess Helper:** Input known information (green, yellow, gray letters) in the correct spots and have Wordle Helper help you pick your next word (the algorithm/scoring system is explained a bit more below). You can uncomment the code below at the bottom of the file _main.py_ (or just copy and paste from here). Fill in the letters in the correct spots and run _main.py_!
+## How to Use:
+For now (and probably always) it just writes to the Python Console. There are a few different capabilities in Wordle Helper:
+### **Single Guess Helper** 
+Input known information (green, yellow, gray letters) in the correct spots and have Wordle Helper help you pick your next word (the algorithm/scoring system is explained a bit more below). You can uncomment the code below at the bottom of the file _main.py_ (or just copy and paste from here). Fill in the letters in the correct spots and run _main.py_!
 ```
 correct_spots = ['', '', '', '', '']  # Green letters
 wrong_spots = ['', '', '', '', '']  # Yellow letters
@@ -17,7 +18,8 @@ scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_gues
 for word, score in scored_list[:20]:  # Only prints the top 20 words
     print(word, score)
 ```
-2. **Simulate Guessing a Wordle:** Using the _simulate_word(word)_ function, you can simulate continuous guesses until the Wordle is guessed. The output is a list of every guess, (hopefully) ending with the Wordle!
+### **Simulate Guessing a Wordle (Multi Guess)** 
+Using the _simulate_word(word)_ function, you can simulate continuous guesses until the Wordle is guessed. The output is a list of every guess, (hopefully) ending with the Wordle!
 
 In **main.py**:
 ```
@@ -29,7 +31,8 @@ Output:
 Guesses:  ['arose', 'alien', 'amble', 'apple']
 Guesses:  ['arose', 'noted', 'enjoy']
 ```
-3. **Simulate Guessing many Wordles:** To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**.
+### **Simulate Guessing Many Wordles** 
+To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**.
 
 In **main.py**:
 ```
@@ -41,7 +44,8 @@ Inputs:  ['knoll', 'crimp', 'wince', 'prick', 'robot', 'point', 'proxy', 'shire'
 Average Num Guesses per Wordle: 4.041666666666667
 ```
 
-## V2 (current version) - Averages 4.0 guesses per word
+## How it Works:
+### V2 (current version) - Averages 4.28 guesses per word
 ### With the first two guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
@@ -73,7 +77,7 @@ Average Num Guesses per Wordle: 4.041666666666667
 - Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
 - Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-3 guesses. The 4-5 guesses are from Wordle words not in the more common dictionary I use.
 
-## V1 - Averages ~5.0 guesses per word
+### V1 - Averages ~5.0 guesses per word
 - Uses dictionary letter frequencies to score words
 ### Past results (from always guessing the first recommended word produced in the list)
 - #214 - POINT (aires, louin, doing, joint, point)
