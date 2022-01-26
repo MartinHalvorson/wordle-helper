@@ -5,21 +5,51 @@ A guess generating aid for playing the game [Wordle](https://www.powerlanguage.c
 _Note: This small project is just for my own fun and if I post results from this anywhere I make it clear that the results were produced with the aid of a computer. By no means am I trying to ruin the spirit of Wordle!_
 
 ### How to Use:
+There are a few different capabilities in Wordle Helper:
+1. **Single Guess Helper:** Input known information (green, yellow, gray letters) in the correct spots and have Wordle Helper help you pick your next word (the algorithm/scoring system is explained a bit more below). You can uncomment the code below at the bottom of the file _main.py_ (or just copy and paste from here). Fill in the letters in the correct spots and run _main.py_!
+```
+correct_spots = ['', '', '', '', '']  # Green letters
+wrong_spots = ['', '', '', '', '']  # Yellow letters
+wrong_letters = ''  # Gray letters
+next_guess_count = 1  # e.g. 1 -> 1st guess
 
-1. In **main.py** at the bottom, fill in known information in _correct_spots_ (green letters), _wrong_spots_ (yellow letters), and _wrong_letters_ (gray letters).
-2. Run **main.py**.
-3. Choose the top scored word (or any word at your discretion from the list) and submit to the [Wordle](https://www.powerlanguage.co.uk/wordle/) game.
-4. Take any new known information from your submitted guess, add it to the inputs in **main.py**, and generate a new guess from the new information.
+scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
+for word, score in scored_list[:20]:  # Only prints the top 20 words
+    print(word, score)
+```
+2. **Simulate Guessing a Wordle:** Using the _simulate_word(word)_ function, you can simulate continuous guesses until the Wordle is guessed. The output is a list of every guess, (hopefully) ending with the Wordle!
 
-## V2 (current version) - Averages 4.1 guesses per word
+In **main.py**:
+```
+simulate_word('apple')
+simulate_word('enjoy')
+```
+Output:
+```
+Guesses:  ['arose', 'alien', 'amble', 'apple']
+Guesses:  ['arose', 'noted', 'enjoy']
+```
+3. **Simulate Guessing many Wordles:** To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**.
+
+In **main.py**:
+```
+calculate_average_guess_metric()
+```
+Output:
+```
+Inputs:  ['knoll', 'crimp', 'wince', 'prick', 'robot', 'point', 'proxy', 'shire', 'solar', 'panic', 'tangy', 'abbey', 'favor', 'drink', 'query', 'gorge', 'crank', 'slump', 'banal', 'tiger', 'siege', 'truss', 'boost', 'rebus']
+Average Num Guesses per Wordle: 4.041666666666667
+```
+
+## V2 (current version) - Averages 4.0 guesses per word
 ### With the first two guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
-- Duplicate letters in a guess are punished (likely to obtain less information than guessing two different letters)
+- Duplicate letters in a guess are punished (they likely obtain less information than guessing two different letters)
 ### Starting with the third guess, the program attempts to guess the actual word.
 - Two word lists: a simpler list of more common five letters words and a larger, more complete word list. Words on common list score a little higher.
-- In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals.
-- Rare letter bonus kicks into scoring after the first two guesses. It appears to me Wordle tries to include words using unique letters (QUERY, PROXY, KNOLL) so we will keep this in mind guessing.
+- In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals. There are some false positives with this and the program attempts to correct for this (i.e. if the word ends in "ss" or "us" it is less likely to be a plural and so these although they end with "s" aren't punished by the word scoring system).
+- A small rare letter bonus kicks into scoring after the first two guesses. It appears to me Wordle tries to include words using unique letters (QUERY, PROXY, KNOLL) so we will keep this in mind when evaluating potential words.
 
 ### Past results (from always guessing the first recommended word produced in the list)
 - #219 - KNOLL (arose, tonic, blown, knoll)
@@ -39,8 +69,8 @@ _Note: This small project is just for my own fun and if I post results from this
 - #205 - QUERY (arose, inert, query)
 - #204 - GORGE (arose, other, forge, gorge)
 
-### Optimizations to make upon V1
-- Rather than always switching to guessing the word on the third clue, could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining, you may still want to guess for maximizing information).
+### Optimizations to make upon V2
+- Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
 - Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-3 guesses. The 4-5 guesses are from Wordle words not in the more common dictionary I use.
 
 ## V1 - Averages ~5.0 guesses per word
