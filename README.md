@@ -78,6 +78,12 @@ Average Num Guesses per Wordle: 4.041666666666667
 - When making a guess, after the list of potential words is scored, the program looks at the score difference between the most likely word and the fifth most likely word. If the difference is small, the program continues to guess for "maximizing information" as it still doesn't really have a good idea what the most likely word is. If the difference is large, it will guess the top (most likely) word as something significant about that word is causing it to score higher than the rest.
 #### Use multiple word lists based on how common a word is. More common words score higher.  -0.26 guesses per Wordle 
 - Three tiers of word lists are used (most common, more common, and all words). The list of potential words is derived from all words, but individual words get score bonuses if they also appear in the more common or most common lists.
+#### When guessing for maximum information, the program doesn't need to guess green letters again.
+- A good example of this:
+```
+Guesses:  ['arose', 'until', 'troll']
+```
+With the first guess, r and o were in the correct spots. However, with the second guess, guessing n and t discovers that n isn't present in the word and that t is. This, in addition to the other information gathered with the second clue, led the program to guess "troll" with the third guess.
 
 
 ### Optimizations to make upon V2
