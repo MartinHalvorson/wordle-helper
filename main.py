@@ -68,7 +68,9 @@ def calculate_word_score(word, frequencies, green, yellow, gray, next_guess_coun
 
     # Guessing to maximize information
     if next_guess_count < 3:
-        letters = [x for i, x in enumerate(word) if word.index(x) == i and x not in ''.join(green)]  # Remove duplicates and green letters
+
+        # Remove duplicates and green letters
+        letters = [x for i, x in enumerate(word) if word.index(x) == i and x not in ''.join(green)]
 
         # Slight bonus for guessing yellow letters (not yet in green) again in a different spot
         score += sum(0.1 for x in letters if x in ''.join(yellow) and x not in ''.join(green))
@@ -116,11 +118,17 @@ def wordle_helper(green, yellow, gray, next_guess_count):
         valid_words = [word for word in all_words if potential_word(word, green, yellow, gray, next_guess_count)]
         scored_list = order_by_score(valid_words, green, yellow, gray, next_guess_count)
 
-        # If the score difference between the top two words is large, high confidence in the top answer
-        if len(scored_list) > 3 and scored_list[2][1] - scored_list[0][1] < 0.2:
+        # If the score difference between the top two words is small, low confidence in the top answer
+        if len(scored_list) >= 2 and scored_list[1][1] - scored_list[0][1] < 0.2:
             # Attempt to maximize information with another guess
-            return order_by_score(valid_words, green, yellow, gray, next_guess_count)
+            return order_by_score(valid_words, green, yellow, gray, 2)
+
+        # or if there are tons of potential answers left (on the more common lists), continue guessing for information
+        elif sum(1 for x in scored_list if x[1] > 0.4) >= 4:
+            return order_by_score(valid_words, green, yellow, gray, 2)
+
         else:
+            # If the difference is high, guess it!
             return scored_list
 
 
@@ -187,7 +195,7 @@ def simulate_many_words(num_words=-1):
         return
 
 
-# simulate_single_word('jaunt', show_stats=True)
+# simulate_single_word('erode', show_stats=True)
 
 simulate_many_words(100)  # This can take five minutes to run for ~220 words
 
