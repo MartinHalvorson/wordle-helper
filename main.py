@@ -127,16 +127,31 @@ def simulate_word(word):
 # Takes optional parameter for number of Wordles to simulate.
 def calculate_average_guess_metric(num_words=-1):
     with open('past_answers.txt', 'r+') as f:
+        distribution = [0] * 15
+        sum = 0
+        max_guesses = 0
+        max_word = None
         words = f.read().replace(' ', '').split('\n')
         if 0 < num_words < len(words):
             words = words[-num_words:]
         print('Inputs: ', words)
-        print('Average Num Guesses per Wordle: ', sum(len(simulate_word(word)) for word in words) / len(words))
+        for word in words:
+            res = len(simulate_word(word))
+            sum += res
+            if res > max_guesses:
+                max_guesses = res
+                max_word = word
+            distribution[res] += 1
+        print('Average Num Guesses per Wordle:', sum / len(words))
+        print('Max Num Guesses:', max_guesses, '  Word:', max_word)
+        print('Distribution:')
+        for i in range(1, max_guesses+1):
+            print('\t', i, 'guess(es):', distribution[i])
         return
 
 
 # simulate_word('apple')
-calculate_average_guess_metric(50)  # This can take a couple minutes to run for ~220 words
+calculate_average_guess_metric(100)  # This can take a couple minutes to run for ~220 words
 
 '''
 correct_spots = ['', 'o', '', '', '']  # Green letters
