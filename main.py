@@ -109,8 +109,8 @@ def simulate_word(word, show_stats=False):
     while len(recommended_guesses) > 0:
         if show_stats:
             print('\nGuess: ', guess_count)
-            for word, score in recommended_guesses[:20]:  # Only prints the top 20 words
-                print(word, score)
+            for rec, score in recommended_guesses[:20]:  # Only prints the top 20 words
+                print(rec, score)
 
         guess = recommended_guesses[0][0]
         guesses.append(guess)
@@ -161,6 +161,7 @@ def calculate_average_guess_metric(num_words=-1):
 
 
 simulate_word('masse', show_stats=True)
+
 # calculate_average_guess_metric(100)  # This can take a couple minutes to run for ~220 words
 
 '''
