@@ -5,8 +5,11 @@ text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e'
 
 # Five letter dictionary file: https://eslforums.com/5-letter-words/
 # Another list of common words, filtered to just the five letter words: http://sherwoodschool.ru/vocabulary/proficiency/
-with open('common_five_letter_words.txt', 'r+') as f:
-    common_word_list = f.read().replace(' ', '').split('\n')
+with open('more_common_five_letter_words.txt', 'r+') as f:
+    more_common_word_list = f.read().replace(' ', '').split('\n')
+
+with open('most_common_five_letter_words.txt', 'r+') as f:
+    most_common_word_list = f.read().replace(' ', '').split('\n')
 
 # Starting with the third guess, rare letter bonus kicks into score. Based on dictionary frequencies.
 rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.0, 'd': 0.0, 'e': 0.0, 'f': 0.05, 'g': 0.05,
@@ -59,8 +62,10 @@ def calculate_word_score(word, frequencies, next_guess_count):
     else:
         letters = [x for x in word]
 
-    if word in common_word_list:  # common word bonus
-        score += 0.5
+    if word in more_common_word_list:  # more common word bonus
+        score += 0.2
+    if word in most_common_word_list:  # most common word bonus (will also get more common word bonus)
+        score += 0.4
     if word[4] == 's' and word[3] not in 'us':  # likely plural penalty
         score -= 0.3
     if next_guess_count >= 3:  # rare letter bonus
@@ -93,7 +98,7 @@ def wordle_helper(green, yellow, gray, next_guess_count):
 
 
 # Given a word as the Wordle, simulates this program attempting to guess that word.
-def simulate_word(word):
+def simulate_word(word, show_stats=False):
     guess_count = 1
     guesses = []
     green = ['', '', '', '', '']  # Green letters
@@ -102,6 +107,11 @@ def simulate_word(word):
     recommended_guesses = wordle_helper(green, yellow, gray, guess_count)
 
     while len(recommended_guesses) > 0:
+        if show_stats:
+            print('\nGuess: ', guess_count)
+            for word, score in recommended_guesses[:20]:  # Only prints the top 20 words
+                print(word, score)
+
         guess = recommended_guesses[0][0]
         guesses.append(guess)
         if guess == word:
@@ -150,8 +160,8 @@ def calculate_average_guess_metric(num_words=-1):
         return
 
 
-# simulate_word('apple')
-calculate_average_guess_metric(100)  # This can take a couple minutes to run for ~220 words
+simulate_word('masse', show_stats=True)
+# calculate_average_guess_metric(100)  # This can take a couple minutes to run for ~220 words
 
 '''
 correct_spots = ['', 'o', '', '', '']  # Green letters
@@ -160,7 +170,7 @@ wrong_letters = 'arseic'  # Gray letters
 next_guess_count = 2  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
-for word, score in scored_list[:50]:  # Only prints the top 20 words
+for word, score in scored_list[:20]:  # Only prints the top 20 words
     print(word, score)
 '''
 
