@@ -73,6 +73,9 @@ Average Num Guesses per Wordle: 4.041666666666667
 - #205 - QUERY (arose, inert, query)
 - #204 - GORGE (arose, other, forge, gorge)
 
+### Learnings
+- There is a tradeoff to make between guessing for information and guessing for the right answer. Gathering more information (about letters in or not in the word, positions of letters) greatly narrows down the possible words. Using the third and fourth guesses to maximize information (rather than guessing the most likely word at that point) tends to lower the ceiling and raise the floor on the distribution of guesses, with 5 guesses being very common. One improvement (and where human intuition comes in) is recognizing which of the remaining words would make good Wordle words and are therefore more likely than the others. I could possibly create a better common word lists to improve the program here.
+
 ### Optimizations to make upon V2
 - Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
 - Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-3 guesses. The 4-5 guesses are from Wordle words not in the more common dictionary I use.
