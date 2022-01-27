@@ -35,32 +35,50 @@ def all_words_to_five_letter_words():
 
 # Given the known information, is this word a valid potential word? Returns True/False
 def potential_word(word, green, yellow, gray, next_guess_count):
+
+    # Guessing to maximize information
     if next_guess_count < 3:  # Don't need to use green clues on the second guess
-        for i, letter in enumerate(green):
-            if word[i] in yellow[i] or word[i] in gray:
+        for i in range(len(yellow)):
+            if word[i] in yellow[i] or word[i] == green[i] or word[i] in gray:
                 return False
-    else:  # Guess words that fit all known information
+            if word[i] in ''.join(yellow) and green[i] != '':
+                return False
+
+    # Guessing the actual word
+    else:
         for i, letter in enumerate(green):
             if (letter != '' and word[i] != letter) or word[i] in yellow[i] or word[i] in gray:
                 return False
 
-    for letter in ''.join(yellow):  # Letters in wrong spots must be present in the word though
-        if letter not in word:
-            return False
+        for letter in ''.join(yellow):  # Letters in wrong spots must be present in the word though
+            if letter not in word:
+                return False
+
     return True
 
 
 # Calculates the frequency score of a word based on the letters in the other valid words
 # Only counts repeated letters once
-def calculate_word_score(word, frequencies, next_guess_count):
+def calculate_word_score(word, frequencies, green, yellow, gray, next_guess_count):
     score = 0
 
+    # Guessing to maximize information
     if next_guess_count < 3:
-        letters = [x for i, x in enumerate(word) if word.index(x) == i]  # Remove duplicates if trying to max information
+        letters = [x for i, x in enumerate(word) if word.index(x) == i and x not in ''.join(green)]  # Remove duplicates and green letters
+
+        # Slight bonus for guessing yellow letters (not yet in green) again in a different spot
+        score += sum(0.1 for x in letters if x in ''.join(yellow) and x not in ''.join(green))
+
+        # Bonuses based on letter frequency
         score += sum(frequencies.get(x, 0) for x in letters)  # dictionary frequencies
         score += sum(text_relative_frequencies[x] for x in letters)  # text frequencies
+
+    # Guessing to pick the top likely word
     else:
         letters = [x for x in word]
+
+        if next_guess_count >= 3:  # rare letter bonus
+            score += 0.75 * sum(rare_letter_bonus[x] for x in letters)
 
     if word in more_common_word_list:  # more common word bonus
         score += 0.2
@@ -68,14 +86,12 @@ def calculate_word_score(word, frequencies, next_guess_count):
         score += 0.4
     if word[4] == 's' and word[3] not in 'us':  # likely plural penalty
         score -= 0.3
-    if next_guess_count >= 3:  # rare letter bonus
-        score += 0.75 * sum(rare_letter_bonus[x] for x in letters)
 
     return score
 
 
 # Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
-def order_by_score(valid_words, next_guess_count):
+def order_by_score(valid_words, green, yellow, gray, next_guess_count):
     frequencies = {}
     for word in valid_words:
         for letter in word:
@@ -83,7 +99,7 @@ def order_by_score(valid_words, next_guess_count):
     total = sum(frequencies.values())
     for letter in frequencies.keys():
         frequencies[letter] /= total
-    scored_list = [(word, calculate_word_score(word, frequencies, next_guess_count)) for word in valid_words]
+    scored_list = [(word, calculate_word_score(word, frequencies, green, yellow, gray, 2)) for word in valid_words]
     scored_list.sort(key=lambda x: x[1], reverse=True)
     return scored_list
 
@@ -94,11 +110,18 @@ def wordle_helper(green, yellow, gray, next_guess_count):
     with open('all_five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
         valid_words = [word for word in all_words if potential_word(word, green, yellow, gray, next_guess_count)]
-        return order_by_score(valid_words, next_guess_count)
+        scored_list = order_by_score(valid_words, green, yellow, gray, next_guess_count)
+
+        # If the score difference between the top two words is large, high confidence in the top answer
+        if len(scored_list) > 4 and scored_list[3][1] - scored_list[0][1] < 0.2:
+            # Attempt to maximize information with another guess
+            return order_by_score(valid_words, green, yellow, gray, next_guess_count)
+        else:
+            return scored_list
 
 
 # Given a word as the Wordle, simulates this program attempting to guess that word.
-def simulate_word(word, show_stats=False):
+def simulate_single_word(word, show_stats=False):
     guess_count = 1
     guesses = []
     green = ['', '', '', '', '']  # Green letters
@@ -135,7 +158,7 @@ def simulate_word(word, show_stats=False):
 # Takes current algorithm and calculates average number of guesses required in order to guess past Wordles
 # Useful for benchmarking value-add of changes.
 # Takes optional parameter for number of Wordles to simulate.
-def calculate_average_guess_metric(num_words=-1):
+def simulate_many_words(num_words=-1):
     with open('past_answers.txt', 'r+') as f:
         distribution = [0] * 15
         sum = 0
@@ -146,7 +169,7 @@ def calculate_average_guess_metric(num_words=-1):
             words = words[-num_words:]
         print('Inputs: ', words)
         for word in words:
-            res = len(simulate_word(word))
+            res = len(simulate_single_word(word))
             sum += res
             if res > max_guesses:
                 max_guesses = res
@@ -160,9 +183,9 @@ def calculate_average_guess_metric(num_words=-1):
         return
 
 
-simulate_word('masse', show_stats=True)
+simulate_single_word('jaunt', show_stats=True)
 
-# calculate_average_guess_metric(100)  # This can take a couple minutes to run for ~220 words
+simulate_many_words(100)  # This can take a couple minutes to run for ~220 words
 
 '''
 correct_spots = ['', 'o', '', '', '']  # Green letters
