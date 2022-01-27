@@ -45,12 +45,12 @@ Average Num Guesses per Wordle: 4.041666666666667
 ```
 
 ## How it Works:
-### V2 (current version) - Averages 4.28 guesses per word
-### With the first two guesses, the program tries to gather maximum information using the frequency of letters in words.
+### V2 (current version) - Averages 4.06 guesses per word
+### With early guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
 - Duplicate letters in a guess are punished (they likely obtain less information than guessing two different letters)
-### Starting with the third guess, the program attempts to guess the actual word.
+### With later guesses (usually around the third guess), the program begins attempting to guess the actual word.
 - Two word lists: a simpler list of more common five letters words and a larger, more complete word list. Words on common list score a little higher.
 - In scoring, punishes dictionary words ending with an s (higher likelihood of being plural). Wordle doesn't often pick plurals. There are some false positives with this and the program attempts to correct for this (i.e. if the word ends in "ss" or "us" it is less likely to be a plural and so these although they end with "s" aren't punished by the word scoring system).
 - A small rare letter bonus kicks into scoring after the first two guesses. It appears to me Wordle tries to include words using unique letters (QUERY, PROXY, KNOLL) so we will keep this in mind when evaluating potential words.
@@ -73,8 +73,12 @@ Average Num Guesses per Wordle: 4.041666666666667
 - #205 - QUERY (arose, inert, query)
 - #204 - GORGE (arose, other, forge, gorge)
 
-### Learnings
-- There is a tradeoff to make between guessing for information and guessing for the right answer. Gathering more information (about letters in or not in the word, positions of letters) greatly narrows down the possible words. Using the third and fourth guesses to maximize information (rather than guessing the most likely word at that point) tends to lower the ceiling and raise the floor on the distribution of guesses, with 5 guesses being very common. One improvement (and where human intuition comes in) is recognizing which of the remaining words would make good Wordle words and are therefore more likely than the others. I could possibly create a better common word lists to improve the program here.
+### Heuristics
+#### Determine when to guess for information vs when to guess for likely word.  -0.08 guesses per Wordle
+- When making a guess, after the list of potential words is scored, the program looks at the score difference between the most likely word and the fifth most likely word. If the difference is small, the program continues to guess for "maximizing information" as it still doesn't really have a good idea what the most likely word is. If the difference is large, it will guess the top (most likely) word as something significant about that word is causing it to score higher than the rest.
+#### Use multiple word lists based on how common a word is. More common words score higher.  -0.26 guesses per Wordle 
+- Three tiers of word lists are used (most common, more common, and all words). The list of potential words is derived from all words, but individual words get score bonuses if they also appear in the more common or most common lists.
+
 
 ### Optimizations to make upon V2
 - Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
