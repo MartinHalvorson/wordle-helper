@@ -1,8 +1,7 @@
-text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e': 0.13, 'f': 0.022, 'g': 0.02,
-                             'h': 0.061, 'i': 0.07, 'j': 0.0015, 'k': 0.0077, 'l': 0.04, 'm': 0.025, 'n': 0.067,
-                             'o': 0.075, 'p': 0.019, 'q': 0.00095, 'r': 0.06, 's': 0.063, 't': 0.091, 'u': 0.028,
-                             'v': 0.0098, 'w': 0.024, 'x': 0.0015, 'y': 0.02, 'z': 0.00074}
+'''
+Most common words
 
+'''
 # Five letter dictionary file: https://eslforums.com/5-letter-words/
 # Another list of common words, filtered to just the five letter words: http://sherwoodschool.ru/vocabulary/proficiency/
 with open('more_common_five_letter_words.txt', 'r+') as f:
@@ -10,6 +9,11 @@ with open('more_common_five_letter_words.txt', 'r+') as f:
 
 with open('most_common_five_letter_words.txt', 'r+') as f:
     most_common_word_list = f.read().replace(' ', '').split('\n')
+
+text_relative_frequencies = {'a': 0.082, 'b': 0.015, 'c': 0.028, 'd': 0.043, 'e': 0.13, 'f': 0.022, 'g': 0.02,
+                             'h': 0.061, 'i': 0.07, 'j': 0.0015, 'k': 0.0077, 'l': 0.04, 'm': 0.025, 'n': 0.067,
+                             'o': 0.075, 'p': 0.019, 'q': 0.00095, 'r': 0.06, 's': 0.063, 't': 0.091, 'u': 0.028,
+                             'v': 0.0098, 'w': 0.024, 'x': 0.0015, 'y': 0.02, 'z': 0.00074}
 
 # Starting with the third guess, rare letter bonus kicks into score. Based on dictionary frequencies.
 rare_letter_bonus = {'a': 0.0, 'b': 0.05, 'c': 0.0, 'd': 0.0, 'e': 0.0, 'f': 0.05, 'g': 0.05,
@@ -99,7 +103,7 @@ def order_by_score(valid_words, green, yellow, gray, next_guess_count):
     total = sum(frequencies.values())
     for letter in frequencies.keys():
         frequencies[letter] /= total
-    scored_list = [(word, calculate_word_score(word, frequencies, green, yellow, gray, 2)) for word in valid_words]
+    scored_list = [(word, calculate_word_score(word, frequencies, green, yellow, gray, next_guess_count)) for word in valid_words]
     scored_list.sort(key=lambda x: x[1], reverse=True)
     return scored_list
 
@@ -113,7 +117,7 @@ def wordle_helper(green, yellow, gray, next_guess_count):
         scored_list = order_by_score(valid_words, green, yellow, gray, next_guess_count)
 
         # If the score difference between the top two words is large, high confidence in the top answer
-        if len(scored_list) > 4 and scored_list[3][1] - scored_list[0][1] < 0.2:
+        if len(scored_list) > 3 and scored_list[2][1] - scored_list[0][1] < 0.2:
             # Attempt to maximize information with another guess
             return order_by_score(valid_words, green, yellow, gray, next_guess_count)
         else:
@@ -183,9 +187,9 @@ def simulate_many_words(num_words=-1):
         return
 
 
-simulate_single_word('jaunt', show_stats=True)
+# simulate_single_word('jaunt', show_stats=True)
 
-simulate_many_words(100)  # This can take a couple minutes to run for ~220 words
+simulate_many_words(100)  # This can take five minutes to run for ~220 words
 
 '''
 correct_spots = ['', 'o', '', '', '']  # Green letters
