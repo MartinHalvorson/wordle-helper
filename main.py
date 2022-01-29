@@ -3,7 +3,7 @@ Most common words
 
 '''
 # Five letter dictionary file: https://eslforums.com/5-letter-words/
-# Another list of common words, filtered to just the five letter words: http://sherwoodschool.ru/vocabulary/proficiency/
+# Another list of common words, filtered to just the five letter words: http://sherwoodschool.ru/en/vocabulary/
 with open('more_common_five_letter_words.txt', 'r+') as f:
     more_common_word_list = f.read().replace(' ', '').split('\n')
 
@@ -37,37 +37,39 @@ def all_words_to_five_letter_words():
     return
 
 
-# Given the known information, is this word a valid potential word? Returns True/False
-def potential_word(word, green, yellow, gray, next_guess_count):
+# Given known information, could this word be a valid answer? Returns True/False
+def is_potential_word(word, green, yellow, gray):
+    for i, letter in enumerate(word):
+        if green[i] != '' and letter != green[i]:
+            return False
+        if letter in yellow[i] or letter in gray:
+            return False
+    for letter in ''.join(yellow):  # Letters in wrong spots must be present in the word though
+        if letter not in word:
+            return False
+    return True
 
-    # Guessing to maximize information
-    if next_guess_count < 3:  # Don't need to use green clues on the second guess
-        for i in range(len(yellow)):
-            if word[i] in yellow[i] or word[i] == green[i] or word[i] in gray:
-                return False
-            if word[i] in ''.join(yellow) and green[i] != '':
-                return False
 
-    # Guessing the actual word
-    else:
-        for i, letter in enumerate(green):
-            if (letter != '' and word[i] != letter) or word[i] in yellow[i] or word[i] in gray:
-                return False
+# Is this a valid word to be generated in max info word list
+def is_good_word_for_max_info(word, green, yellow, gray):
+    for i, letter in enumerate(word):
+        if letter in yellow[i] or letter in gray:
+            return False
 
-        for letter in ''.join(yellow):  # Letters in wrong spots must be present in the word though
-            if letter not in word:
-                return False
-
+        # Guessing a yellow in a known green doesn't yield any more info...
+        if word[i] in ''.join(yellow) and green[i] != '' and word[i] != green[i]:
+            return False
     return True
 
 
 # Calculates the frequency score of a word based on the letters in the other valid words
 # Only counts repeated letters once
-def calculate_word_score(word, frequencies, green, yellow, gray, next_guess_count):
+# score_type is either 'max info' or 'likely word'
+def calculate_word_score(word, frequencies, green, yellow, gray, score_type=None):
     score = 0
 
     # Guessing to maximize information
-    if next_guess_count < 3:
+    if score_type == 'max info':
 
         # Remove duplicates and green letters
         letters = [x for i, x in enumerate(word) if word.index(x) == i and x not in ''.join(green)]
@@ -79,25 +81,39 @@ def calculate_word_score(word, frequencies, green, yellow, gray, next_guess_coun
         score += sum(frequencies.get(x, 0) for x in letters)  # dictionary frequencies
         score += sum(text_relative_frequencies[x] for x in letters)  # text frequencies
 
-    # Guessing to pick the top likely word
-    else:
-        letters = [x for x in word]
-
-        if next_guess_count >= 3:  # rare letter bonus
-            score += 0.75 * sum(rare_letter_bonus[x] for x in letters)
-        if word in most_common_word_list:  # most common word bonus (will also get more common word bonus)
+        if word in more_common_word_list:  # more common word bonus
             score += 0.3
+        '''
+        if word in most_common_word_list:  # more common word bonus
+            score += 0.05
+        '''
+        if word[4] == 's' and word[3] not in 'us':  # likely plural penalty
+            score -= 0.3
 
-    if word in more_common_word_list:  # more common word bonus
-        score += 0.3
-    if word[4] == 's' and word[3] not in 'us':  # likely plural penalty
-        score -= 0.3
+        return score
 
-    return score
+    # Guessing to pick the top likely word
+    elif score_type == 'likely word':
+        letters = [x for x in word]
+        score += 0.75 * sum(rare_letter_bonus[x] for x in letters)  # rare letter bonus
+
+        if word in most_common_word_list:  # most common word bonus (will also get more common word bonus)
+            score += 0.4
+        if word in more_common_word_list:  # more common word bonus
+            score += 0.2
+
+        if word[4] == 's' and word[3] not in 'us':  # likely plural penalty
+            score -= 0.3
+
+        return score
+
+    else:
+        print("Error: shouldn't be here")
+        return
 
 
 # Takes a list of valid words and returns a sorted list of valid words based on letter-frequency of the original list
-def order_by_score(valid_words, green, yellow, gray, next_guess_count):
+def order_by_score(valid_words, green, yellow, gray, score_type):
     frequencies = {}
     for word in valid_words:
         for letter in word:
@@ -105,7 +121,7 @@ def order_by_score(valid_words, green, yellow, gray, next_guess_count):
     total = sum(frequencies.values())
     for letter in frequencies.keys():
         frequencies[letter] /= total
-    scored_list = [(word, calculate_word_score(word, frequencies, green, yellow, gray, next_guess_count)) for word in valid_words]
+    scored_list = [(word, calculate_word_score(word, frequencies, green, yellow, gray, score_type)) for word in valid_words]
     scored_list.sort(key=lambda x: x[1], reverse=True)
     return scored_list
 
@@ -115,32 +131,44 @@ def order_by_score(valid_words, green, yellow, gray, next_guess_count):
 def wordle_helper(green, yellow, gray, next_guess_count):
     with open('all_five_letter_words.txt', 'r') as f:
         all_words = f.read().split('\n')
-        valid_words = [word for word in all_words if potential_word(word, green, yellow, gray, next_guess_count)]
 
-        # Initially, if #1 or #2 guess -> max information. If #3 or after guess -> guess likely word.
-        scored_list = order_by_score(valid_words, green, yellow, gray, next_guess_count)
+        are_valid_words = [word for word in all_words if is_potential_word(word, green, yellow, gray)]
+        scored_valid_words = order_by_score(are_valid_words, green, yellow, gray, score_type='likely word')
+        # print('Valid len:', len(are_valid_words))
+        # print('Valid list:', scored_valid_words[:10])
 
+        scored_max_info_valid_words = order_by_score(are_valid_words, green, yellow, gray, score_type='max info')
+        # print('Max info len:', len(scored_max_info_words))
+        # print('Max info list:', scored_max_info_words[:10])
+
+        are_max_info_words = [word for word in all_words if is_good_word_for_max_info(word, green, yellow, gray)]
+        scored_max_info_words = order_by_score(are_max_info_words, green, yellow, gray, score_type='max info')
+        # print('Max info len:', len(scored_max_info_words))
+        # print('Max info list:', scored_max_info_words[:10])
+
+        # Initially, if #1 or #2 guess -> auto guess for max information.
         if 1 <= next_guess_count <= 2:
-            # If the difference is high, guess it!
-            print('1, early guess, max info', next_guess_count)
-            return scored_list
+            # print('1, early guess, max info')
+            return scored_max_info_words
 
-        # If #3 or after guess and the score difference between the top two words is small, low confidence in the top answer
-        elif next_guess_count >= 3 and len(scored_list) >= 2 and scored_list[1][1] - scored_list[0][1] < 0.1:
-            print(scored_list[0][1] - scored_list[1][1])
+        if 3 <= next_guess_count <= 3:
+            return scored_max_info_valid_words
+
+        # If #4 or after guess and there are a few likely valid answers left, best to guess them (on the more common lists), continue guessing for information
+        elif sum(1 for x in scored_valid_words if x[1] > 0) <= 4:
+            # print('2, late guess, fewer options, try valid word')
+            return scored_valid_words
+
+        # If #4 or after guess and the score difference between the top two words is small, low confidence in the top answer
+        elif len(scored_valid_words) >= 2 and scored_valid_words[0][1] - scored_valid_words[1][1] < 0.1:
             # Attempt to maximize information with another guess
-            print('2, late guess, small difference. max info', next_guess_count)
-            return order_by_score(valid_words, green, yellow, gray, 1)
+            # print('3, late guess, small difference. max info')
+            return scored_max_info_valid_words
 
-        # If #3 or after guess and there are tons of potential answers left (on the more common lists), continue guessing for information
-        elif next_guess_count >= 3 and sum(1 for x in scored_list if x[1] > 0.4) >= 4:
-            print('3, late guess, lots of options, max info', next_guess_count)
-            return order_by_score(valid_words, green, yellow, gray, 1)
-
+        # If confidence is high, guess it!
         else:
-            # If the difference is high, guess it!
-            print('4, top word', next_guess_count)
-            return scored_list
+            # print('4, top word')
+            return scored_valid_words
 
 
 # Given a word as the Wordle, simulates this program attempting to guess that word.
@@ -155,7 +183,7 @@ def simulate_single_word(word, show_stats=False):
     while len(recommended_guesses) > 0:
         if show_stats:
             print('Guess: ', guess_count)
-            for rec, score in recommended_guesses[:100]:  # Only prints the top 20 words
+            for rec, score in recommended_guesses[:20]:  # Only prints the top 20 words
                 print(rec, score)
             print()
 
@@ -174,8 +202,10 @@ def simulate_single_word(word, show_stats=False):
                 else:
                     gray += guess[i]
         recommended_guesses = wordle_helper(green, yellow, gray, guess_count)
+        # print('Recommended: ', recommended_guesses[:10])
+        # print(green, yellow, gray)
 
-    print('error: ', word, guesses)
+    print('error: list empty. Wordle:', word, guesses)
     exit(1)
 
 
@@ -207,7 +237,7 @@ def simulate_many_words(num_words=-1):
         return
 
 
-simulate_single_word('jaunt', show_stats=True)
+simulate_single_word('colon', show_stats=True)
 
 # simulate_many_words(200)  # This can take five minutes to run for ~220 words
 
