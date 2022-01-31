@@ -45,7 +45,7 @@ Average Num Guesses per Wordle: 4.041666666666667
 ```
 
 ## How it Works:
-### V2 (current version) - Averages 3.95 guesses per word
+### V2 (current version) - Averages 4.07 guesses per word
 ### With early guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
@@ -88,7 +88,7 @@ With the first guess, r and o were in the correct spots. However, with the secon
 
 ### Optimizations to make upon V2
 - Rather than always switching to guessing the word on the third clue, I could base when the switch happens on the number of possible words remaining (i.e. with lots of words remaining on the third guess, you may still want to guess for maximizing information).
-- Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-3 guesses. The 4-5 guesses are from Wordle words not in the more common dictionary I use.
+- Find an even better dictionary. Every time the word was in the dictionary the word was guessed in 2-4 guesses. The 5+ guesses are from Wordle words not in the more common dictionary I use.
 
 ### V1 - Averages ~5.0 guesses per word
 - Uses dictionary letter frequencies to score words
