@@ -23,8 +23,8 @@ Using the _simulate_word(word)_ function, you can simulate continuous guesses un
 
 In **main.py**:
 ```
-simulate_word('apple')
-simulate_word('enjoy')
+simulate_single_word('apple')
+simulate_single_word('enjoy')
 ```
 Output:
 ```
@@ -32,16 +32,34 @@ Guesses:  ['arose', 'alien', 'amble', 'apple']
 Guesses:  ['arose', 'noted', 'enjoy']
 ```
 ### **Simulate Guessing Many Wordles** 
-To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**.
+To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**. You can also specify the number of Wordles to simulate.
 
 In **main.py**:
 ```
-calculate_average_guess_metric()
+simulate_many_words(10)
 ```
 Output:
 ```
-Inputs:  ['knoll', 'crimp', 'wince', 'prick', 'robot', 'point', 'proxy', 'shire', 'solar', 'panic', 'tangy', 'abbey', 'favor', 'drink', 'query', 'gorge', 'crank', 'slump', 'banal', 'tiger', 'siege', 'truss', 'boost', 'rebus']
-Average Num Guesses per Wordle: 4.041666666666667
+Inputs:  ['solar', 'shire', 'proxy', 'point', 'robot', 'prick', 'wince', 'crimp', 'knoll', 'sugar']
+Guesses:  ['arose', 'solar']
+Guesses:  ['arose', 'shirt', 'shire']
+Guesses:  ['arose', 'until', 'broch', 'proxy']
+Guesses:  ['arose', 'tonic', 'point']
+Guesses:  ['arose', 'intro', 'throw', 'robot']
+Guesses:  ['arose', 'until', 'crimp', 'prick']
+Guesses:  ['arose', 'until', 'hinge', 'mince', 'vince', 'wince']
+Guesses:  ['arose', 'until', 'crimp']
+Guesses:  ['arose', 'until', 'knoll']
+Guesses:  ['arose', 'stair', 'sugar']
+Average Num Guesses per Wordle: 3.5
+Max Num Guesses: 6   Word: wince
+Distribution:
+	 1 guess(es): 0
+	 2 guess(es): 1
+	 3 guess(es): 5
+	 4 guess(es): 3
+	 5 guess(es): 0
+	 6 guess(es): 1
 ```
 
 ## How it Works:
