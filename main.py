@@ -146,11 +146,20 @@ def wordle_helper(green, yellow, gray, next_guess_count):
         # print('Max info len:', len(scored_max_info_words))
         # print('Max info list:', scored_max_info_words[:10])
 
+        # At any point, if there are only 1-2 valid words left, just guess the first one.
+        if 1 <= len(scored_valid_words) <= 2:
+            return scored_valid_words
+
         # Initially, if #1 or #2 guess -> auto guess for max information.
         if 1 <= next_guess_count <= 2:
             # print('1, early guess, max info')
             return scored_max_info_words
 
+        # If more than ____ words left, guess for max info
+        if len(scored_valid_words) > 20:
+            return scored_max_info_words
+
+        # If fewer than ____ valid words remaining by guess #3, at least be guessing valid words.
         if 3 <= next_guess_count <= 3:
             return scored_max_info_valid_words
 
@@ -180,7 +189,8 @@ def simulate_single_word(word, show_stats=False):
     gray = ''  # Gray letters
     recommended_guesses = wordle_helper(green, yellow, gray, guess_count)
 
-    recommended_guesses = [('stare', 1)]
+    # Can input default first word here for testing
+    # recommended_guesses = [('later', 1)]
 
     while len(recommended_guesses) > 0:
         if show_stats:
@@ -239,19 +249,18 @@ def simulate_many_words(num_words=-1):
         return
 
 
-# simulate_single_word('wrung', show_stats=True)
+# simulate_single_word('slosh', show_stats=True)
 
-simulate_many_words(200)  # This can take five minutes to run for ~220 words
+simulate_many_words(400)  # This can take five minutes to run for ~220 words
 
 # all_words_to_five_letter_words()
 
-'''
-correct_spots = ['', '', '', '', '']  # Green letters
-wrong_spots = ['', '', 't', 'i', 'l']  # Yellow letters
-wrong_letters = 'aroseun'  # Gray letters
+
+correct_spots = ['', '', 'o', 's', '']  # Green letters
+wrong_spots = ['', '', '', 'h', '']  # Yellow letters
+wrong_letters = 'arenigt'  # Gray letters
 next_guess_count = 3  # e.g. 1 -> 1st guess
 
 scored_list = wordle_helper(correct_spots, wrong_spots, wrong_letters, next_guess_count)
 for word, score in scored_list[:20]:  # Only prints the top 20 words
     print(word, score)
-'''
