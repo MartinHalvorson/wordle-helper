@@ -65,7 +65,11 @@ Distribution:
 ```
 
 ## How it Works:
-### V2 (current version) - Averages 3.95 guesses per word
+### V3 (current version) - Averages 3.90 guesses per word
+- Improved word lists to allowable words by Wordle (rather than trying to source my own lists from other dictionaries online)
+
+
+### V2 (current version) - Averages 4.07 guesses per word
 ### With early guesses, the program tries to gather maximum information using the frequency of letters in words.
 - Uses both dictionary letter frequencies and text letter frequencies to score words
 - If on the first guess, you get a green letter, you don't need to (necessarily) guess this green letter in the second clue if you are trying to maximize information.
