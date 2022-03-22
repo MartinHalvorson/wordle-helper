@@ -65,7 +65,7 @@ Distribution:
 ```
 
 ## How it Works:
-### V3 (current version) - Averages 3.90 guesses per word
+### V3 (current version) - Averages 3.807 guesses per word
 - Improved word lists to allowable words by Wordle (rather than trying to source my own lists from other dictionaries online)
 
 
