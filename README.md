@@ -4,10 +4,10 @@ A guess generating aid for playing the game [Wordle](https://www.powerlanguage.c
 
 _Note: This small project is just for my own fun and if I post results from this anywhere I make it clear that the results were produced with the aid of a computer. By no means am I trying to ruin the spirit of Wordle!_
 
-_Also, the dictionaries I used are just from some random sources online. The actual list of Wordles answers is pretty easily available and I considered using this as the dictionary (it would help a lot for reducing guesses per Wordle) but I feel like this isn't fair game to use... If you had the list of Wordles answers you'd be able to solve everything in 1 guess... Some solutions just scramble this and use it. Maybe I'll try that at some point in the future. I think I'd rewrite this to segment down potential answers if I went that route._
+_Also, the dictionaries I used are just from some random, generic word lists online. They aren't specific to the past or future Wordle answers._
 
 ## How to Use:
-For now (and probably always) it just writes to the Python Console. There are a few different capabilities in Wordle Helper:
+For now (and probably always) it just writes to the CLI. There are a few different capabilities in Wordle Helper:
 ### **Single Guess Helper** 
 Input known information (green, yellow, gray letters) in the correct spots and have Wordle Helper help you pick your next word (the algorithm/scoring system is explained a bit more below). You can uncomment the code below at the bottom of the file _main.py_ (or just copy and paste from here). Fill in the letters in the correct spots and run _main.py_!
 ```
