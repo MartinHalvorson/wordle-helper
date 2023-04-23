@@ -34,6 +34,8 @@ Guesses:  ['arose', 'noted', 'enjoy']
 ### **Simulate Guessing Many Wordles** 
 To test the above function across many Wordles, fill the file **past_answers.txt** with Wordles and run the function _calculate_average_guess_metric()_ in **main.py**. You can also specify the number of Wordles to simulate.
 
+Calculating an "average # of guesses" metric across many words is useful for benchmarking and measuring improvements to the simulator.
+
 In **main.py**:
 ```
 simulate_many_words(10)
